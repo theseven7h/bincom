@@ -26,3 +26,4 @@ Route::get('/ajax/polling-units/{wardId}', [AjaxController::class, 'getPollingUn
 Route::get('/ajax/pu-results/{pollingUnitId}', [AjaxController::class, 'getPuResults']);
 Route::get('/ajax/lga-results/{lgaId}', [AjaxController::class, 'getLgaResults']);
 Route::get('/ajax/parties', [AjaxController::class, 'getParties']);
+\nRoute::get('/health', fn() => response('OK', 200));
