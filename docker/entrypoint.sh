@@ -18,8 +18,6 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 php artisan config:clear
-php artisan route:cache
-php artisan view:cache
 
 # Fix storage permissions
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
