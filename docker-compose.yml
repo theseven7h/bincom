@@ -1,0 +1,54 @@
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: bincom_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: bincomphptest
+      MYSQL_USER: bincom
+      MYSQL_PASSWORD: bincom123
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./bincom_test.sql:/docker-entrypoint-initdb.d/bincom_test.sql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-psecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: bincom_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_NAME: "Bincom Election Results"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: bincomphptest
+      DB_USERNAME: bincom
+      DB_PASSWORD: bincom123
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      LOG_CHANNEL: stderr
+    volumes:
+      - .:/var/www/html
+      - vendor_data:/var/www/html/vendor
+    ports:
+      - "8000:8000"
+
+volumes:
+  db_data:
+  vendor_data:
